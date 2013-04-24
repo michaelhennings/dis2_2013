@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DIS2_Exercise2" default="compile">
+  <target name="compile">
+    <mkdir dir="build" />
+    <javac srcdir="src" destdir="build" includeantruntime="false">
+      
+    </javac>
+  </target>
+  
+  <target name="run">
+    
+  </target>
+  
+  <target name="clean">
+    <delete dir="build" />
+  </target>
+</project>
