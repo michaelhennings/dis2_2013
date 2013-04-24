@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DIS2_Exercise2" default="compile">
+  <property name="mainclass" value="MyApp" />
+  
   <target name="compile">
     <mkdir dir="build" />
-    <javac srcdir="src" destdir="build" includeantruntime="false">
-      
+    <javac destdir="build" includeantruntime="false">
+      <src location="src" />
+      <classpath location="libs" />
     </javac>
   </target>
   
   <target name="run">
-    
+    <java dir="build" classname="${mainclass}" fork="true">
+      <classpath>
+        <pathelement path="build"/>
+        <pathelement location="libs/GraphicsEventSystem.jar" />
+      </classpath>
+    </java>
   </target>
   
   <target name="clean">
