@@ -11,7 +11,7 @@
     </javac>
   </target>
   
-  <target name="run">
+  <target name="run" depends="compile">
     <java dir="build" classname="${mainclass}" fork="true">
       <classpath>
         <pathelement path="build"/>
