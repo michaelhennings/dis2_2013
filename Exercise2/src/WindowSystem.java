@@ -18,7 +18,9 @@ public class WindowSystem extends GraphicsEventSystem {
   private final int height;
 
   /**
-   * Maintains a list of windows that belong to this desktop.
+   * Maintains a list of windows that belong to this desktop. The order
+   * represents the z-index of each window: the lower the z-index, the closer
+   * will the window will be up-front in the list.
    */
   private final List<SimpleWindow> windowList = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class WindowSystem extends GraphicsEventSystem {
         WindowSystem.this.dispose();
       }
     };
-    addWindowListener(disposeOnClose);    
+    addWindowListener(disposeOnClose);
   }
 
   private SimplePoint<Integer> abstractToDesktopCoord(SimplePoint<Float> abstractCoord) {
@@ -117,5 +119,6 @@ public class WindowSystem extends GraphicsEventSystem {
    * desktop.
    */
   private void revalidateWindows() {
+    handlePaint();
   }
 }
