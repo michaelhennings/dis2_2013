@@ -1,2 +1,3 @@
 # Default build directory
 **/build
+/Exercise2/nbproject/private/
