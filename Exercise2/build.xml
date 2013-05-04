@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DIS2_Exercise2" default="compile">
-  <property name="mainclass" value="MyApp" />
+  <property name="mainclass" value="assignment2.MyApp" />
   <property name="classname.bonus" value="assignment2.bonus.BonusApp" />
   
   <target name="compile">

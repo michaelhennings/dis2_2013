@@ -1,3 +1,5 @@
+package ws;
+
 
 /**
  * Basic top-class that manages a single window on the desktop.

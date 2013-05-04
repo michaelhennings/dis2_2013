@@ -1,9 +1,13 @@
+package ws;
+
 
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import rwth.hci.Graphics.GraphicsEventSystem;
 
 public class WindowSystem extends GraphicsEventSystem {
 
