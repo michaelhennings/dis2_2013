@@ -26,7 +26,7 @@ public class WindowSystem extends GraphicsEventSystem {
    * represents the z-index of each window: the lower the z-index, the closer
    * will the window will be up-front in the list.
    */
-  private final List<SimpleWindow> windowList = new ArrayList<>();
+  private final List<SimpleWindow> windowList;
 
   /**
    * Create a new virtual 'deskop' with the given (fixed) dimension.
@@ -36,11 +36,12 @@ public class WindowSystem extends GraphicsEventSystem {
    */
   public WindowSystem(int width, int height) {
     super(width, height);
+    this.windowList = new ArrayList<>();
     this.width = width;
     this.height = height;
     this.setTitle("Desktop");
 
-    // *** Allow the window to be closed window ***
+    // *** Allow the window to be closed ***
 
     WindowAdapter disposeOnClose = new WindowAdapter() {
       @Override
@@ -51,10 +52,15 @@ public class WindowSystem extends GraphicsEventSystem {
     addWindowListener(disposeOnClose);
   }
 
+  /**
+   * Convert device independent abstract coordinates to desktop coordinates.
+   * @param abstractCoord Abstract coordinate.
+   * @return Desktop coordinate.
+   */
   private Point<Integer> abstractToDesktopCoord(Point<Float> abstractCoord) {
     int x = (int) (width * abstractCoord.getX());
     int y = (int) (height * abstractCoord.getY());
-    return new Point<Integer>(x, y);
+    return new Point<>(x, y);
   }
 
   /**
@@ -76,15 +82,15 @@ public class WindowSystem extends GraphicsEventSystem {
   public void handlePaint() {
     drawBackground();
     for (SimpleWindow window : windowList) {
-      // TODO: To something with the window here
+      // TODO: Do something with the window here
     }
   }
 
   public void drawLine(float StartX, float StartY, float EndX, float EndY) {
     Point<Float> abstractStartPoint =
-            new Point<Float>(StartX, StartY);
+            new Point<>(StartX, StartY);
     Point<Float> abstractEndPoint =
-            new Point<Float>(EndX, EndY);
+            new Point<>(EndX, EndY);
 
     Point<Integer> desktopStartPoint =
             abstractToDesktopCoord(abstractStartPoint);
