@@ -1,11 +1,11 @@
 package ws;
 
 
-public class SimplePoint<T> {
+public class Point<T> {
 	T x;
 	T y;
 	
-	public SimplePoint(T x, T y){
+	public Point(T x, T y){
 		this.x = x;
 		this.y = y;
 	}

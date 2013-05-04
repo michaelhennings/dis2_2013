@@ -51,10 +51,10 @@ public class WindowSystem extends GraphicsEventSystem {
     addWindowListener(disposeOnClose);
   }
 
-  private SimplePoint<Integer> abstractToDesktopCoord(SimplePoint<Float> abstractCoord) {
+  private Point<Integer> abstractToDesktopCoord(Point<Float> abstractCoord) {
     int x = (int) (width * abstractCoord.getX());
     int y = (int) (height * abstractCoord.getY());
-    return new SimplePoint<Integer>(x, y);
+    return new Point<Integer>(x, y);
   }
 
   /**
@@ -81,14 +81,14 @@ public class WindowSystem extends GraphicsEventSystem {
   }
 
   public void drawLine(float StartX, float StartY, float EndX, float EndY) {
-    SimplePoint<Float> abstractStartPoint =
-            new SimplePoint<Float>(StartX, StartY);
-    SimplePoint<Float> abstractEndPoint =
-            new SimplePoint<Float>(EndX, EndY);
+    Point<Float> abstractStartPoint =
+            new Point<Float>(StartX, StartY);
+    Point<Float> abstractEndPoint =
+            new Point<Float>(EndX, EndY);
 
-    SimplePoint<Integer> desktopStartPoint =
+    Point<Integer> desktopStartPoint =
             abstractToDesktopCoord(abstractStartPoint);
-    SimplePoint<Integer> desktopEndPoint =
+    Point<Integer> desktopEndPoint =
             abstractToDesktopCoord(abstractEndPoint);
 
     this.drawLine(desktopStartPoint.getX(), desktopStartPoint.getY(),
