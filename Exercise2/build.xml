@@ -20,7 +20,7 @@
     </java>
   </target>
   
-  <target name="run-bonus">
+  <target name="run-bonus" depends="compile">
     <java dir="build" classname="${classname.bonus}" fork="true">
     </java>
   </target>

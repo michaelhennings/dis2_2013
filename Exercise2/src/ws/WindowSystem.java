@@ -36,7 +36,7 @@ public class WindowSystem extends GraphicsEventSystem {
    */
   public WindowSystem(int width, int height) {
     super(width, height);
-    this.windowList = new ArrayList<>();
+    this.windowList = new ArrayList<SimpleWindow>();
     this.width = width;
     this.height = height;
     this.setTitle("Desktop");
@@ -60,7 +60,7 @@ public class WindowSystem extends GraphicsEventSystem {
   private Point<Integer> abstractToDesktopCoord(Point<Float> abstractCoord) {
     int x = (int) (width * abstractCoord.getX());
     int y = (int) (height * abstractCoord.getY());
-    return new Point<>(x, y);
+    return new Point<Integer>(x, y);
   }
 
   /**
@@ -88,9 +88,9 @@ public class WindowSystem extends GraphicsEventSystem {
 
   public void drawLine(float StartX, float StartY, float EndX, float EndY) {
     Point<Float> abstractStartPoint =
-            new Point<>(StartX, StartY);
+            new Point<Float>(StartX, StartY);
     Point<Float> abstractEndPoint =
-            new Point<>(EndX, EndY);
+            new Point<Float>(EndX, EndY);
 
     Point<Integer> desktopStartPoint =
             abstractToDesktopCoord(abstractStartPoint);
