@@ -1,4 +1,4 @@
-package ws;
+package windowSystem;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -38,7 +38,7 @@ public class WindowSystem extends GraphicsEventSystem {
         this.width = width;
         this.height = height;
         this.setTitle("Desktop");
-
+ 
         // *** Allow the window to be closed ***
 
         WindowAdapter disposeOnClose = new WindowAdapter() {
@@ -60,6 +60,12 @@ public class WindowSystem extends GraphicsEventSystem {
         int x = (int) (width * abstractCoord.getX());
         int y = (int) (height * abstractCoord.getY());
         return new Point<Integer>(x, y);
+    }
+    
+    Point<Float> desktopToAbstractCoord(Point<Integer> desktopCoord) {
+        float x = (float)desktopCoord.getX()/(float)width;
+        float y = (float)desktopCoord.getY()/(float)height;
+        return new Point<Float>(x, y);
     }
     
     Rectangle abstractToDesktopRectangle(RectangleF abstractRectangle){
@@ -90,9 +96,30 @@ public class WindowSystem extends GraphicsEventSystem {
      */
     @Override
     public void handlePaint() {
+        System.out.println("Yes");
         drawBackground();
         for (RootWindow window : windowList) {
             window.handlePaint(window.getDrawingContext());
+        }
+    }
+    
+    @Override
+    public void handleMouseClicked(int x, int y){
+        //Transform point to abstract coordinates
+        Point<Float> abstractPoint = 
+                desktopToAbstractCoord(new Point<Integer>(x, y));
+        
+        
+        //Traverse the window list back to front
+        for(int i = windowList.size() - 1; i >= 0; i--){
+            SimpleWindow currentWindow = windowList.get(i);
+            if(currentWindow.desktopArea.contains(abstractPoint)){
+                Point<Float> relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        currentWindow.desktopArea);
+                currentWindow.handleMouseClicked(relativePoint);
+                return;
+            }
         }
     }
 
@@ -121,7 +148,6 @@ public class WindowSystem extends GraphicsEventSystem {
             throw new NullPointerException("window must not be null!");
         }
         windowList.add(window);
-        //revalidateWindows();
     }
 
     /**
@@ -131,15 +157,6 @@ public class WindowSystem extends GraphicsEventSystem {
      */
     public void removeWindow(RootWindow window) {
         windowList.remove(window);
-        //revalidateWindows();
-    }
-
-    /**
-     * This method re-evaluates the windows after adding/removing a window to
-     * the desktop.
-     */
-    private void revalidateWindows() {
-        handlePaint();
     }
 
     public SimpleWindow createRootWindow(RectangleF desktopArea) {

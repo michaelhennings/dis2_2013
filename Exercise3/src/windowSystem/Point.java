@@ -1,4 +1,4 @@
-package ws;
+package windowSystem;
 
 
 public class Point<T> {

@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ws;
+package windowSystem;
 
 /**
  *
  * @author Andre
  */
-public interface IPaintCallback {
-    public void handleDraw(DrawingContext drawingContext);
+public interface IMouseClickedCallback {
+    void handleMouseClicked(Point<Float> point);
 }

@@ -1,12 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package ws;
+package windowSystem;
 
 /**
- *
- * @author Andre
+ * A rectangle with float values.
  */
 public class RectangleF {
     private float x;
@@ -52,5 +47,14 @@ public class RectangleF {
     
     public float getBottom(){
         return y + height;
+    }
+    
+    public boolean contains(Point<Float> point){
+        if(point.getX() < x || point.getX() > getRight())
+            return false;
+        if(point.getY() < y || point.getY() > getBottom())
+            return false;
+        
+        return true;
     }
 }

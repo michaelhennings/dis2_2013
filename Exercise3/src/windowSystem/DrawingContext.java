@@ -1,26 +1,30 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package ws;
+package windowSystem;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 
 /**
- *
- * @author Andre
+ * Window dependent drawing context.
+ * This class abstracts away from the drawing commands which are provided by
+ * the GraphicsEventSystem. The drawing commands are all relative to the window
+ * for which the context is used. This class also makes it possible to store
+ * a drawing state (current color, etc.) per window.
  */
 public class DrawingContext {
     private WindowSystem windowSystem;
     private RectangleF drawingArea;
     
+    private Color color;
+    
     DrawingContext(WindowSystem windowSystem){
         this.windowSystem = windowSystem;
+        color = windowSystem.getBackground();
     }
     
-    void setDrawingArea(RectangleF drawingArea){
+    void init(RectangleF drawingArea){
         this.drawingArea = drawingArea;
+        
+        windowSystem.setColor(color);
     }
     
     public void fillRect(RectangleF rectangle){
@@ -44,6 +48,7 @@ public class DrawingContext {
     }
     
     public void setColor(Color color){
+        this.color = color;
         windowSystem.setColor(color);
     }
     

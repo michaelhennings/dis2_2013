@@ -1,8 +1,15 @@
 package assignment3;
 
 
+import windowSystem.IPaintCallback;
+import windowSystem.SimpleWindow;
+import windowSystem.RectangleF;
+import windowSystem.Point;
+import windowSystem.WindowSystem;
+import windowSystem.DrawingContext;
 import java.awt.Color;
-import ws.*;
+import java.awt.Rectangle;
+import windowSystem.IMouseClickedCallback;
 
 
 public class MyApp {
@@ -11,6 +18,7 @@ public class MyApp {
                 
                 //Init window 1
                 SimpleWindow window1 = windowSystem.createRootWindow(new RectangleF(.1f, .1f, 0.5f, 0.5f));
+                
                 window1.setPaintCallback(new IPaintCallback() {
 
                     @Override
@@ -19,6 +27,14 @@ public class MyApp {
                         drawingContext.fillRect(new RectangleF(0.0f, 0.0f, 1.0f, 1.0f));
                         drawingContext.setColor(Color.black);
                         drawingContext.drawLine(new Point<Float>(.2f, .3f), new Point<Float>(.8f, .7f));
+                    }
+                });
+                
+                window1.setMouseClickedCallback(new IMouseClickedCallback() {
+
+                    @Override
+                    public void handleMouseClicked(Point<Float> point) {
+                        System.out.println("Hallo: (" + point.getX() + ", " + point.getY() + ")");
                     }
                 });
                 
