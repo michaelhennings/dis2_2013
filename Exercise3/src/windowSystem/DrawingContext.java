@@ -12,39 +12,41 @@ import java.awt.Rectangle;
  */
 public class DrawingContext {
     private WindowSystem windowSystem;
-    private RectangleF drawingArea;
+    private SimpleWindow window;
     
     private Color color;
     
-    DrawingContext(WindowSystem windowSystem){
+    DrawingContext(WindowSystem windowSystem, SimpleWindow window){
         this.windowSystem = windowSystem;
+        this.window = window;
         color = windowSystem.getBackground();
     }
     
-    void init(RectangleF drawingArea){
-        this.drawingArea = drawingArea;
-        
+    /**
+     * Restores the values of this drawing context. This is called by the
+     * window system when the context is switched.
+     */
+    void init(){
         windowSystem.setColor(color);
     }
     
     public void fillRect(RectangleF rectangle){
-        RectangleF abstractRectangle = transformToAbsoluteRect(rectangle);
+        int desktopX = (int)(window.getDesktopArea().x + rectangle.getX() * window.getDesktopArea().width);
+        int desktopY = (int)(window.getDesktopArea().y + rectangle.getY() * window.getDesktopArea().height);
+        int desktopWidth = (int)(window.getDesktopArea().getWidth() * rectangle.getWidth());
+        int desktopHeight = (int)(window.getDesktopArea().getHeight() * rectangle.getHeight());
         
-        Rectangle desktopRectangle = 
-                windowSystem.abstractToDesktopRectangle(abstractRectangle);
-        
-        windowSystem.fillRect(desktopRectangle.x, desktopRectangle.y, 
-                desktopRectangle.width, desktopRectangle.height);
+        windowSystem.fillRect(desktopX, desktopY, desktopWidth, desktopHeight);
     }
     
-    public void drawLine(Point<Float> start, Point<Float> end){
-        Point<Float> absoluteStart = transformToAbsoluteCoord(start);
-        Point<Float> absoluteEnd = transformToAbsoluteCoord(end);
+    public void drawLine(PointF start, PointF end){
+        int desktopStartX = (int)(window.getDesktopArea().x + start.getX() * window.getDesktopArea().width);
+        int desktopStartY = (int)(window.getDesktopArea().y + start.getY() * window.getDesktopArea().height);
         
-        Point<Integer> desktopStart = windowSystem.abstractToDesktopCoord(absoluteStart);
-        Point<Integer> desktopEnd = windowSystem.abstractToDesktopCoord(absoluteEnd);
+        int desktopEndX = (int)(window.getDesktopArea().x + end.getX() * window.getDesktopArea().width);
+        int desktopEndY = (int)(window.getDesktopArea().y + end.getY() * window.getDesktopArea().height);
         
-        windowSystem.drawLine(desktopStart.getX(), desktopStart.getY(), desktopEnd.getX(), desktopEnd.getY());
+        windowSystem.drawLine(desktopStartX, desktopStartY, desktopEndX, desktopEndY);
     }
     
     public void setColor(Color color){
@@ -52,23 +54,15 @@ public class DrawingContext {
         windowSystem.setColor(color);
     }
     
-    private Point<Float> transformToAbsoluteCoord(Point<Float> relativeCoord){
-        float absX = drawingArea.getX() * (1.0f - relativeCoord.getX())
-                + drawingArea.getRight() * relativeCoord.getX();
-        float absY = drawingArea.getY() * (1.0f - relativeCoord.getY())
-                + drawingArea.getBottom() * relativeCoord.getY();
-        
-        return new Point<Float>(absX, absY);
+    public int getDesktopWidth(){
+        return windowSystem.getDesktopWidth();
     }
     
-    private RectangleF transformToAbsoluteRect(RectangleF relativeRect){
-        Point<Float> absPoint = 
-                transformToAbsoluteCoord(
-                new Point<Float>(relativeRect.getX(), relativeRect.getY()));
-        float absWidth = drawingArea.getWidth() * relativeRect.getWidth();
-        float absHeight = drawingArea.getHeight() * relativeRect.getHeight();
-        
-        return new RectangleF(absPoint.getX(), absPoint.getY(), absWidth, 
-                absHeight);
+    public int getDesktopHeight(){
+        return windowSystem.getDesktopHeight();
+    }
+    
+    void requestRepaint(){
+        windowSystem.requestRepaint(new Rectangle(0, 0, getDesktopWidth(), getDesktopHeight()));
     }
 }

@@ -9,5 +9,5 @@ package windowSystem;
  * @author Andre
  */
 public interface IMouseClickedCallback {
-    void handleMouseClicked(Point<Float> point);
+    void handleMouseClicked(PointF point);
 }

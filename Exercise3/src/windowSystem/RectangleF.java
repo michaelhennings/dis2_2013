@@ -49,7 +49,7 @@ public class RectangleF {
         return y + height;
     }
     
-    public boolean contains(Point<Float> point){
+    public boolean contains(PointF point){
         if(point.getX() < x || point.getX() > getRight())
             return false;
         if(point.getY() < y || point.getY() > getBottom())

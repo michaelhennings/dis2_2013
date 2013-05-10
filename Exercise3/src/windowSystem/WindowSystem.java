@@ -1,11 +1,16 @@
 package windowSystem;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import rwth.hci.Graphics.GraphicsEventSystem;
 
@@ -24,7 +29,7 @@ public class WindowSystem extends GraphicsEventSystem {
      * represents the z-index of each window: the lower the z-index, the closer
      * will the window will be up-front in the list.
      */
-    private final List<RootWindow> windowList;
+    private final List<SimpleWindow> windowList;
 
     /**
      * Create a new virtual 'deskop' with the given (fixed) dimension.
@@ -34,7 +39,7 @@ public class WindowSystem extends GraphicsEventSystem {
      */
     public WindowSystem(int width, int height) {
         super(width, height);
-        this.windowList = new ArrayList<RootWindow>();
+        this.windowList = new ArrayList<SimpleWindow>();
         this.width = width;
         this.height = height;
         this.setTitle("Desktop");
@@ -56,27 +61,27 @@ public class WindowSystem extends GraphicsEventSystem {
      * @param abstractCoord Abstract coordinate.
      * @return Desktop coordinate.
      */
-    Point<Integer> abstractToDesktopCoord(Point<Float> abstractCoord) {
+    Point abstractToDesktopCoord(PointF abstractCoord) {
         int x = (int) (width * abstractCoord.getX());
         int y = (int) (height * abstractCoord.getY());
-        return new Point<Integer>(x, y);
+        return new Point(x, y);
     }
     
-    Point<Float> desktopToAbstractCoord(Point<Integer> desktopCoord) {
+    PointF desktopToAbstractCoord(Point desktopCoord) {
         float x = (float)desktopCoord.getX()/(float)width;
         float y = (float)desktopCoord.getY()/(float)height;
-        return new Point<Float>(x, y);
+        return new PointF(x, y);
     }
     
     Rectangle abstractToDesktopRectangle(RectangleF abstractRectangle){
         float abstractX = abstractRectangle.getX();
         float abstractY = abstractRectangle.getY();
-        Point<Integer> desktopPoint = abstractToDesktopCoord(new Point<Float>(abstractX, abstractY));
+        Point desktopPoint = abstractToDesktopCoord(new PointF(abstractX, abstractY));
         
         int desktopWidth = (int) (width * abstractRectangle.getWidth());
         int desktopHeight = (int) (height * abstractRectangle.getHeight());
         
-        return new Rectangle(desktopPoint.getX(), desktopPoint.getY(), desktopWidth, desktopHeight);
+        return new Rectangle(desktopPoint.x, desktopPoint.y, desktopWidth, desktopHeight);
     }
 
     /**
@@ -96,46 +101,45 @@ public class WindowSystem extends GraphicsEventSystem {
      */
     @Override
     public void handlePaint() {
-        System.out.println("Yes");
         drawBackground();
-        for (RootWindow window : windowList) {
-            window.handlePaint(window.getDrawingContext());
+        for (SimpleWindow window : windowList) {
+            window.internalHandlePaint();
         }
     }
     
     @Override
     public void handleMouseClicked(int x, int y){
         //Transform point to abstract coordinates
-        Point<Float> abstractPoint = 
-                desktopToAbstractCoord(new Point<Integer>(x, y));
+        PointF abstractPoint = 
+                desktopToAbstractCoord(new Point(x, y));
         
         
         //Traverse the window list back to front
         for(int i = windowList.size() - 1; i >= 0; i--){
             SimpleWindow currentWindow = windowList.get(i);
-            if(currentWindow.desktopArea.contains(abstractPoint)){
-                Point<Float> relativePoint = 
+            if(currentWindow.windowArea.contains(abstractPoint)){
+                PointF relativePoint = 
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
-                        currentWindow.desktopArea);
-                currentWindow.handleMouseClicked(relativePoint);
+                        currentWindow.windowArea);
+                currentWindow.internalHandleMouseClicked(relativePoint);
                 return;
             }
         }
     }
 
     public void drawLine(float StartX, float StartY, float EndX, float EndY) {
-        Point<Float> abstractStartPoint =
-                new Point<Float>(StartX, StartY);
-        Point<Float> abstractEndPoint =
-                new Point<Float>(EndX, EndY);
+        PointF abstractStartPoint =
+                new PointF(StartX, StartY);
+        PointF abstractEndPoint =
+                new PointF(EndX, EndY);
 
-        Point<Integer> desktopStartPoint =
+        Point desktopStartPoint =
                 abstractToDesktopCoord(abstractStartPoint);
-        Point<Integer> desktopEndPoint =
+        Point desktopEndPoint =
                 abstractToDesktopCoord(abstractEndPoint);
 
-        this.drawLine(desktopStartPoint.getX(), desktopStartPoint.getY(),
-                desktopEndPoint.getX(), desktopEndPoint.getY());
+        this.drawLine(desktopStartPoint.x, desktopStartPoint.y,
+                desktopEndPoint.x, desktopEndPoint.y);
     }
 
     /**
@@ -143,25 +147,35 @@ public class WindowSystem extends GraphicsEventSystem {
      *
      * @param window The window to be added
      */
-    public void addWindow(RootWindow window) {
+    public void addWindow(SimpleWindow window) {
         if (window == null) {
             throw new NullPointerException("window must not be null!");
         }
+        
+        initNewWindow(window);
         windowList.add(window);
     }
 
+    private void initNewWindow(SimpleWindow window){
+        window.internalInit(new DrawingContext(this, window));
+        for(SimpleWindow child : window.children){
+            initNewWindow(child);
+        }
+    }
     /**
      * Remove a window from the desktop.
      *
      * @param window The window to be removed
      */
-    public void removeWindow(RootWindow window) {
+    public void removeWindow(SimpleWindow window) {
         windowList.remove(window);
     }
-
-    public SimpleWindow createRootWindow(RectangleF desktopArea) {
-        RootWindow rootWindow = new RootWindow(desktopArea, new DrawingContext(this));
-        addWindow(rootWindow);
-        return rootWindow;
+    
+    public int getDesktopWidth(){
+        return width;
+    }
+    
+    public int getDesktopHeight(){
+        return height;
     }
 }
