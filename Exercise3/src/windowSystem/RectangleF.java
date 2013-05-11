@@ -16,6 +16,10 @@ public class RectangleF {
         this.height = height;
     }
     
+    public RectangleF(RectangleF rectangle){
+        this(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
+    
     public float getX(){
         return x;
     }

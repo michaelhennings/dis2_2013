@@ -27,6 +27,12 @@ public class SimpleWindow {
     List<SimpleWindow> children;
     DrawingContext drawingContext;
     
+    IPaintCallback paintCallback;
+    IMouseCallback mouseClickedCallback;
+    IMouseCallback mouseMovedCallback;
+    IMouseCallback mouseDraggedCallback;
+    IMouseCallback mousePressedCallback;
+    
     public SimpleWindow(RectangleF windowArea){
         this.windowArea = windowArea;
         
@@ -35,6 +41,12 @@ public class SimpleWindow {
         desktopArea = new Rectangle();
         children = new ArrayList<SimpleWindow>();
         parentWindow = null;
+        
+        paintCallback = null;
+        mouseClickedCallback = null;
+        mouseMovedCallback = null;
+        mouseDraggedCallback = null;
+        mousePressedCallback = null;
     }
     
     void internalInit(DrawingContext drawingContext){
@@ -61,6 +73,9 @@ public class SimpleWindow {
      * @param context 
      */
     protected void handlePaint(DrawingContext context){
+        if(paintCallback != null){
+            paintCallback.handleDraw(drawingContext);
+        }
     }
     
     void internalHandleMouseClicked(PointF point){
@@ -79,7 +94,71 @@ public class SimpleWindow {
     }
     
     protected void handleMouseClicked(PointF point){
-        
+        if(mouseClickedCallback != null)
+            mouseClickedCallback.handleMouse(point);
+    }
+    
+    void internalHandleMouseMoved(PointF point){
+        //Traverse the window list back to front
+        for(int i = children.size() - 1; i >= 0; i--){
+            SimpleWindow child = children.get(i);
+            if(child.windowArea.contains(point)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        child.windowArea);
+                child.internalHandleMouseMoved(relativePoint);
+                return;
+            }
+        }
+        handleMouseMoved(point);
+    }
+    
+    protected void handleMouseMoved(PointF point){
+        if(mouseMovedCallback != null){
+            mouseMovedCallback.handleMouse(point);
+        }
+    }
+    
+    void internalHandleMouseDragged(PointF point){
+        //Traverse the window list back to front
+        for(int i = children.size() - 1; i >= 0; i--){
+            SimpleWindow child = children.get(i);
+            if(child.windowArea.contains(point)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        child.windowArea);
+                child.internalHandleMouseDragged(relativePoint);
+                return;
+            }
+        }
+        handleMouseDragged(point);
+    }
+    
+    protected void handleMouseDragged(PointF point){
+        if(mouseDraggedCallback != null){
+            mouseDraggedCallback.handleMouse(point);
+        }
+    }
+    
+    void internalHandleMousePressed(PointF point){
+        //Traverse the window list back to front
+        for(int i = children.size() - 1; i >= 0; i--){
+            SimpleWindow child = children.get(i);
+            if(child.windowArea.contains(point)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        child.windowArea);
+                child.internalHandleMousePressed(relativePoint);
+                return;
+            }
+        }
+        handleMousePressed(point);
+    }
+    
+    protected void handleMousePressed(PointF point){
+        if(mousePressedCallback != null){
+            mousePressedCallback.handleMouse(point);
+        }
     }
     
     DrawingContext getDrawingContext(){
@@ -99,14 +178,14 @@ public class SimpleWindow {
             desktopArea.width = (int)(windowArea.getWidth() * parentWindow.desktopArea.getWidth());
             desktopArea.height = (int)(windowArea.getHeight() * parentWindow.desktopArea.getHeight());
         }
+        
+        for(SimpleWindow child : children){
+            child.recalculateDesktopArea();
+        }
     }
     
     Rectangle getDesktopArea(){
         return desktopArea;
-    }
-    
-    RectangleF getWindowArea(){
-        return windowArea;
     }
     
     public void requestRepaint(){
@@ -116,5 +195,35 @@ public class SimpleWindow {
     public void addChild(SimpleWindow simpleWindow){
         simpleWindow.parentWindow = this;
         children.add(simpleWindow);
+    }
+    
+    public void moveTo(PointF position){
+        windowArea.setX(position.getX());
+        windowArea.setY(position.getY());
+        recalculateDesktopArea();
+    }
+    
+    public void setPaintCallback(IPaintCallback paintCallback){
+        this.paintCallback = paintCallback;
+    }
+    
+    public void setMouseClickedCallback(IMouseCallback mouseClickedCallback){
+        this.mouseClickedCallback = mouseClickedCallback;
+    }
+    
+    public void setMouseMovedCallback(IMouseCallback mouseMovedCallback){
+        this.mouseMovedCallback = mouseMovedCallback;
+    }
+    
+    public void setMouseDraggedCallback(IMouseCallback mouseDraggedCallback){
+        this.mouseDraggedCallback = mouseDraggedCallback;
+    }
+    
+    public void setMousePressedCallback(IMouseCallback mousePressedCallback){
+        this.mousePressedCallback = mousePressedCallback;
+    }
+    
+    public RectangleF getWindowArea(){
+        return new RectangleF(windowArea);
     }
 }

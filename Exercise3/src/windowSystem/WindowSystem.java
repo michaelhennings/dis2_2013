@@ -91,8 +91,6 @@ public class WindowSystem extends GraphicsEventSystem {
     private void drawBackground() {
         setColor(Color.CYAN);
         fillRect(0, 0, width, height);
-        setColor(Color.red);
-        drawLine(0.2f, 0.3f, .8f, .7f);
     }
 
     /**
@@ -122,6 +120,63 @@ public class WindowSystem extends GraphicsEventSystem {
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
                         currentWindow.windowArea);
                 currentWindow.internalHandleMouseClicked(relativePoint);
+                return;
+            }
+        }
+    }
+    
+    @Override
+    public void handleMouseMoved(int x, int y){
+        //Transform point to abstract coordinates
+        PointF abstractPoint = 
+                desktopToAbstractCoord(new Point(x, y));
+        
+        //Traverse the window list back to front
+        for(int i = windowList.size() - 1; i >= 0; i--){
+            SimpleWindow currentWindow = windowList.get(i);
+            if(currentWindow.windowArea.contains(abstractPoint)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        currentWindow.windowArea);
+                currentWindow.internalHandleMouseMoved(relativePoint);
+                return;
+            }
+        }
+    }
+    
+    @Override
+    public void handleMouseDragged(int x, int y){
+        //Transform point to abstract coordinates
+        PointF abstractPoint = 
+                desktopToAbstractCoord(new Point(x, y));
+        
+        //Traverse the window list back to front
+        for(int i = windowList.size() - 1; i >= 0; i--){
+            SimpleWindow currentWindow = windowList.get(i);
+            if(currentWindow.windowArea.contains(abstractPoint)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        currentWindow.windowArea);
+                currentWindow.internalHandleMouseDragged(relativePoint);
+                return;
+            }
+        }
+    }
+    
+    @Override
+    public void handleMousePressed(int x, int y){
+        //Transform point to abstract coordinates
+        PointF abstractPoint = 
+                desktopToAbstractCoord(new Point(x, y));
+        
+        //Traverse the window list back to front
+        for(int i = windowList.size() - 1; i >= 0; i--){
+            SimpleWindow currentWindow = windowList.get(i);
+            if(currentWindow.windowArea.contains(abstractPoint)){
+                PointF relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        currentWindow.windowArea);
+                currentWindow.internalHandleMousePressed(relativePoint);
                 return;
             }
         }

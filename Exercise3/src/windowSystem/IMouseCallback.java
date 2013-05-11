@@ -8,6 +8,6 @@ package windowSystem;
  *
  * @author Andre
  */
-public interface IMouseClickedCallback {
-    void handleMouseClicked(PointF point);
+public interface IMouseCallback {
+    void handleMouse(PointF point);
 }

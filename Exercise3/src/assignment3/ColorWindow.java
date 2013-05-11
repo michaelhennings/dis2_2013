@@ -5,21 +5,21 @@
 package assignment3;
 
 import java.awt.Color;
+import windowManager.TopWindow;
 import windowSystem.DrawingContext;
 import windowSystem.PointF;
 import windowSystem.RectangleF;
-import windowSystem.SimpleWindow;
 
 /**
  * A window that changes it's color when it is clicked.
  */
-public class ColorWindow extends SimpleWindow {
+public class ColorWindow extends TopWindow {
     private boolean firstColorSet;
     private Color color1;
     private Color color2;
     
-    public ColorWindow(RectangleF drawingArea, Color color1, Color color2){
-        super(drawingArea);
+    public ColorWindow(RectangleF drawingArea, String title, Color color1, Color color2){
+        super(drawingArea, title);
         firstColorSet = true;
         this.color1 = color1;
         this.color2 = color2;
@@ -36,7 +36,7 @@ public class ColorWindow extends SimpleWindow {
     
     @Override
     public void handleMouseClicked(PointF point){
-        firstColorSet = !firstColorSet;            
+        firstColorSet = !firstColorSet;
         requestRepaint();
     }
 }
