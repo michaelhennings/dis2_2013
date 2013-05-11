@@ -224,6 +224,7 @@ public class WindowSystem extends GraphicsEventSystem {
      */
     public void removeWindow(SimpleWindow window) {
         windowList.remove(window);
+        requestRepaint(new Rectangle(0,0,width,height));
     }
     
     public int getDesktopWidth(){

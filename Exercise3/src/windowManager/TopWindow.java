@@ -21,6 +21,7 @@ public class TopWindow {
     TitleBarWindow titleWindow;
     SimpleWindow clientWindow;
     PointF titleDragPoint;
+    WindowManager windowManager;
     
     public TopWindow(RectangleF windowArea, String title){
         containerWindow = new SimpleWindow(windowArea);
@@ -50,7 +51,7 @@ public class TopWindow {
 
             @Override
             public void handleDraw(DrawingContext drawingContext) {
-                TopWindow.this.handlePaint(drawingContext); //To change body of generated methods, choose Tools | Templates.
+                TopWindow.this.handlePaint(drawingContext);
             }
         });
         
@@ -59,6 +60,14 @@ public class TopWindow {
             @Override
             public void handleMouse(PointF point) {
                 TopWindow.this.handleMouseClicked(point);
+            }
+        });
+        
+        titleWindow.setCloseCallback(new ICloseCallback() {
+
+            @Override
+            public void handleClose() {
+                TopWindow.this.handleClose();
             }
         });
     }
@@ -75,11 +84,18 @@ public class TopWindow {
         
     }
     
+    protected void handleClose(){
+        requestClose();
+    }
+    
     private void handleTitleBarMouseDragged(PointF point){
+        if(titleDragPoint == null)
+            return;
         //Convert to container coordinates
         PointF containerPoint = CoordinateMath.transformToAbsolutePoint(point, 
                 titleWindow.getWindowArea());
         
+        //Convert to abstract desktop coordinates
         PointF desktopPoint = CoordinateMath.transformToAbsolutePoint(containerPoint, containerWindow.getWindowArea());
         
         PointF movementVector = new PointF(desktopPoint.getX() - titleDragPoint.getX(), 
@@ -104,5 +120,9 @@ public class TopWindow {
     private void handleTitleBarMousePressed(PointF point) {
         PointF containerDragPoint = CoordinateMath.transformToAbsolutePoint(point, titleWindow.getWindowArea());
         titleDragPoint = CoordinateMath.transformToAbsolutePoint(containerDragPoint, containerWindow.getWindowArea());
+    }
+    
+    public void requestClose(){
+        windowManager.removeTopWindow(this);
     }
 }

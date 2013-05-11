@@ -24,6 +24,12 @@ public class WindowManager {
     
     public void addTopWindow(TopWindow window){
         topWindows.add(window);
+        window.windowManager = this;
         windowSystem.addWindow(window.containerWindow);
+    }
+    
+    public void removeTopWindow(TopWindow window){
+        windowSystem.removeWindow(window.containerWindow);
+        topWindows.remove(window);
     }
 }

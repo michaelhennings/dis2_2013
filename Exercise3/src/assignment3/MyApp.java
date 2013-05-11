@@ -17,5 +17,8 @@ public class MyApp {
                 
                 ColorWindow window2 = new ColorWindow(new RectangleF(.6f, .1f, .3f, .3f), "Window2", Color.green, Color.red);
                 windowManager.addTopWindow(window2);
+                
+                ColorWindow window3 = new ColorWindow(new RectangleF(.1f, .6f, .8f, .3f), "Window3", Color.pink, Color.yellow);
+                windowManager.addTopWindow(window3);
 	}
 }
