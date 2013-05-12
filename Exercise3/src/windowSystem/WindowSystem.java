@@ -255,7 +255,7 @@ public class WindowSystem extends GraphicsEventSystem {
         requestRepaint(new Rectangle(0, 0, width, height));
     }
 
-    private void initNewWindow(SimpleWindow window){
+    void initNewWindow(SimpleWindow window){
         //Give the window a drawing context
         window.internalInit(new DrawingContext(this, window));
         //Init it's children
@@ -279,5 +279,11 @@ public class WindowSystem extends GraphicsEventSystem {
     
     public int getDesktopHeight(){
         return height;
+    }
+    
+    public void moveWindowToTop(SimpleWindow window){
+        windowList.remove(window);
+        addWindow(window);
+        
     }
 }

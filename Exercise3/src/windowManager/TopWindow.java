@@ -35,6 +35,7 @@ public class TopWindow {
 
             @Override
             public void handleMouse(PointF point) {
+                TopWindow.this.windowManager.moveWindowToTop(TopWindow.this);
                 TopWindow.this.handleTitleBarMousePressed(point);
             }
         });

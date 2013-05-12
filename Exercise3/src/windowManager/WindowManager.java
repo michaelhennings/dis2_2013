@@ -32,4 +32,8 @@ public class WindowManager {
         windowSystem.removeWindow(window.containerWindow);
         topWindows.remove(window);
     }
+    
+    void moveWindowToTop(TopWindow window){
+        windowSystem.moveWindowToTop(window.containerWindow);
+    }
 }
