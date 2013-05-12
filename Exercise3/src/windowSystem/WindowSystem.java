@@ -114,12 +114,20 @@ public class WindowSystem extends GraphicsEventSystem {
         PointF abstractPoint = 
                 desktopToAbstractCoord(new Point(x, y));
         
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.internalHandleMouseClicked(relativePoint);
+            return;
+        }
         
         //Traverse the window list back to front
         for(int i = windowList.size() - 1; i >= 0; i--){
             SimpleWindow currentWindow = windowList.get(i);
             if(currentWindow.windowArea.contains(abstractPoint)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
                         currentWindow.windowArea);
                 currentWindow.internalHandleMouseClicked(relativePoint);
@@ -134,11 +142,20 @@ public class WindowSystem extends GraphicsEventSystem {
         PointF abstractPoint = 
                 desktopToAbstractCoord(new Point(x, y));
         
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.internalHandleMouseMoved(relativePoint);
+            return;
+        }
+        
         //Traverse the window list back to front
         for(int i = windowList.size() - 1; i >= 0; i--){
             SimpleWindow currentWindow = windowList.get(i);
             if(currentWindow.windowArea.contains(abstractPoint)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
                         currentWindow.windowArea);
                 currentWindow.internalHandleMouseMoved(relativePoint);
@@ -197,11 +214,14 @@ public class WindowSystem extends GraphicsEventSystem {
     
     @Override
     public void handleMouseReleased(int x, int y){
+        if(mousePriorityWindow == null){//Theoretically this should not happen, but just in case
+            return;
+        }
         //Transform point to abstract coordinates
         PointF abstractPoint = 
                 desktopToAbstractCoord(new Point(x, y));
         
-        mousePriorityWindow.handleMouseReleased(abstractPoint);
+        mousePriorityWindow.internalHandleMouseReleased(abstractPoint);
         mousePriorityWindow = null;
     }
 

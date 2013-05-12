@@ -83,11 +83,19 @@ public class SimpleWindow {
     }
     
     void internalHandleMouseClicked(PointF point){
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.internalHandleMouseClicked(relativePoint);
+            return;
+        }
         //Traverse the window list back to front
         for(int i = children.size() - 1; i >= 0; i--){
             SimpleWindow child = children.get(i);
             if(child.windowArea.contains(point)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(point, 
                         child.windowArea);
                 child.internalHandleMouseClicked(relativePoint);
@@ -103,11 +111,19 @@ public class SimpleWindow {
     }
     
     void internalHandleMouseMoved(PointF point){
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.internalHandleMouseMoved(relativePoint);
+            return;
+        }
         //Traverse the window list back to front
         for(int i = children.size() - 1; i >= 0; i--){
             SimpleWindow child = children.get(i);
             if(child.windowArea.contains(point)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(point, 
                         child.windowArea);
                 child.internalHandleMouseMoved(relativePoint);
@@ -129,7 +145,7 @@ public class SimpleWindow {
             relativePoint = 
                         CoordinateMath.transformToRelativePoint(point, 
                         mousePriorityWindow.windowArea);
-            mousePriorityWindow.handleMouseDragged(relativePoint);
+            mousePriorityWindow.internalHandleMouseDragged(relativePoint);
             return;
         }
         //Traverse the window list back to front
