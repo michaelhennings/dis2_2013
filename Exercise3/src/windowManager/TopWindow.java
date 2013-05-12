@@ -44,6 +44,15 @@ public class TopWindow {
             }
         });
         
+        clientWindow.setMousePressedCallback(new IMouseCallback() {
+
+            @Override
+            public void handleMouse(PointF point) {
+                TopWindow.this.windowManager.moveWindowToTop(TopWindow.this);
+                TopWindow.this.handleMousePressed(point);
+            }
+        });
+        
         titleWindow.setMouseDraggedCallback(new IMouseCallback() {
 
             @Override
@@ -81,6 +90,14 @@ public class TopWindow {
             @Override
             public void handleMouse(PointF point) {
                 TopWindow.this.handleResizeWindowDragged(point);
+            }
+        });
+        
+        resizeWindow.setMousePressedCallback(new IMouseCallback() {
+
+            @Override
+            public void handleMouse(PointF point) {
+                TopWindow.this.windowManager.moveWindowToTop(TopWindow.this);
             }
         });
     }
@@ -150,5 +167,9 @@ public class TopWindow {
         
         containerWindow.resize(containerPoint.getX() * containerWindow.getWindowArea().getWidth(), containerPoint.getY() * containerWindow.getWindowArea().getHeight());
         requestRepaint();
+    }
+
+    protected void handleMousePressed(PointF point) {
+        
     }
 }
