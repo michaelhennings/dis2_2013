@@ -37,12 +37,15 @@ public class WindowSystem extends GraphicsEventSystem {
      * @param width Width of the window in px.
      * @param height Height of the window in px.
      */
+    
+    private SimpleWindow mousePriorityWindow;
     public WindowSystem(int width, int height) {
         super(width, height);
         this.windowList = new ArrayList<SimpleWindow>();
         this.width = width;
         this.height = height;
         this.setTitle("Desktop");
+        mousePriorityWindow = null;
  
         // *** Allow the window to be closed ***
 
@@ -150,11 +153,20 @@ public class WindowSystem extends GraphicsEventSystem {
         PointF abstractPoint = 
                 desktopToAbstractCoord(new Point(x, y));
         
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(abstractPoint, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.internalHandleMouseDragged(relativePoint);
+            return;
+        }
+        
         //Traverse the window list back to front
         for(int i = windowList.size() - 1; i >= 0; i--){
             SimpleWindow currentWindow = windowList.get(i);
             if(currentWindow.windowArea.contains(abstractPoint)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
                         currentWindow.windowArea);
                 currentWindow.internalHandleMouseDragged(relativePoint);
@@ -176,10 +188,21 @@ public class WindowSystem extends GraphicsEventSystem {
                 PointF relativePoint = 
                         CoordinateMath.transformToRelativePoint(abstractPoint, 
                         currentWindow.windowArea);
+                mousePriorityWindow = currentWindow;
                 currentWindow.internalHandleMousePressed(relativePoint);
                 return;
             }
         }
+    }
+    
+    @Override
+    public void handleMouseReleased(int x, int y){
+        //Transform point to abstract coordinates
+        PointF abstractPoint = 
+                desktopToAbstractCoord(new Point(x, y));
+        
+        mousePriorityWindow.handleMouseReleased(abstractPoint);
+        mousePriorityWindow = null;
     }
 
     public void drawLine(float StartX, float StartY, float EndX, float EndY) {
@@ -209,10 +232,13 @@ public class WindowSystem extends GraphicsEventSystem {
         
         initNewWindow(window);
         windowList.add(window);
+        requestRepaint(new Rectangle(0, 0, width, height));
     }
 
     private void initNewWindow(SimpleWindow window){
+        //Give the window a drawing context
         window.internalInit(new DrawingContext(this, window));
+        //Init it's children
         for(SimpleWindow child : window.children){
             initNewWindow(child);
         }

@@ -26,12 +26,14 @@ public class SimpleWindow {
     SimpleWindow parentWindow;
     List<SimpleWindow> children;
     DrawingContext drawingContext;
+    SimpleWindow mousePriorityWindow;
     
     IPaintCallback paintCallback;
     IMouseCallback mouseClickedCallback;
     IMouseCallback mouseMovedCallback;
     IMouseCallback mouseDraggedCallback;
     IMouseCallback mousePressedCallback;
+    IMouseCallback mouseReleasedCallback;
     
     public SimpleWindow(RectangleF windowArea){
         this.windowArea = windowArea;
@@ -41,12 +43,14 @@ public class SimpleWindow {
         desktopArea = new Rectangle();
         children = new ArrayList<SimpleWindow>();
         parentWindow = null;
+        mousePriorityWindow = null;
         
         paintCallback = null;
         mouseClickedCallback = null;
         mouseMovedCallback = null;
         mouseDraggedCallback = null;
         mousePressedCallback = null;
+        mouseReleasedCallback = null;
     }
     
     void internalInit(DrawingContext drawingContext){
@@ -120,11 +124,19 @@ public class SimpleWindow {
     }
     
     void internalHandleMouseDragged(PointF point){
+        PointF relativePoint = null;
+        if(mousePriorityWindow != null){
+            relativePoint = 
+                        CoordinateMath.transformToRelativePoint(point, 
+                        mousePriorityWindow.windowArea);
+            mousePriorityWindow.handleMouseDragged(relativePoint);
+            return;
+        }
         //Traverse the window list back to front
         for(int i = children.size() - 1; i >= 0; i--){
             SimpleWindow child = children.get(i);
             if(child.windowArea.contains(point)){
-                PointF relativePoint = 
+                relativePoint = 
                         CoordinateMath.transformToRelativePoint(point, 
                         child.windowArea);
                 child.internalHandleMouseDragged(relativePoint);
@@ -148,6 +160,7 @@ public class SimpleWindow {
                 PointF relativePoint = 
                         CoordinateMath.transformToRelativePoint(point, 
                         child.windowArea);
+                mousePriorityWindow = child;
                 child.internalHandleMousePressed(relativePoint);
                 return;
             }
@@ -158,6 +171,20 @@ public class SimpleWindow {
     protected void handleMousePressed(PointF point){
         if(mousePressedCallback != null){
             mousePressedCallback.handleMouse(point);
+        }
+    }
+    
+    void internalHandleMouseReleased(PointF point){
+        if(mousePriorityWindow != null)
+            mousePriorityWindow.internalHandleMouseReleased(point);
+        else
+           handleMouseReleased(point);
+        mousePriorityWindow = null;
+    }
+    
+    protected void handleMouseReleased(PointF point){
+        if(mouseReleasedCallback != null){
+            mouseReleasedCallback.handleMouse(point);
         }
     }
     
@@ -221,6 +248,10 @@ public class SimpleWindow {
     
     public void setMousePressedCallback(IMouseCallback mousePressedCallback){
         this.mousePressedCallback = mousePressedCallback;
+    }
+    
+    public void setMouseReleasedCallback(IMouseCallback mouseReleasedCallback){
+        this.mouseReleasedCallback = mouseReleasedCallback;
     }
     
     public RectangleF getWindowArea(){
