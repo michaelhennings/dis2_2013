@@ -273,4 +273,18 @@ public class SimpleWindow {
     public RectangleF getWindowArea(){
         return new RectangleF(windowArea);
     }
+    
+    public void resize(float width, float height){
+        if(parentWindow == null)
+        {
+            if(width < .02f)
+                width = .02f;
+            if(height < .02f)
+                height = .02f;
+            
+        }
+        windowArea.setWidth(width);
+        windowArea.setHeight(height);
+        recalculateDesktopArea();
+    }
 }

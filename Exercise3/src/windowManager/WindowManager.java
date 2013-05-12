@@ -6,7 +6,6 @@ package windowManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import windowSystem.SimpleWindow;
 import windowSystem.WindowSystem;
 
 /**

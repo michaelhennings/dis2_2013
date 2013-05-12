@@ -20,16 +20,20 @@ public class TopWindow {
     SimpleWindow containerWindow;
     TitleBarWindow titleWindow;
     SimpleWindow clientWindow;
+    ResizeWindow resizeWindow;
     PointF titleDragPoint;
     WindowManager windowManager;
+    
     
     public TopWindow(RectangleF windowArea, String title){
         containerWindow = new SimpleWindow(windowArea);
         titleWindow = new TitleBarWindow(new RectangleF(.0f, .0f, 1.0f, .1f), title);
         clientWindow = new SimpleWindow(new RectangleF(.0f, .1f, 1.0f, .9f));
+        resizeWindow = new ResizeWindow(new RectangleF(.9f, .9f, .1f, .1f));
         
         containerWindow.addChild(titleWindow);
         containerWindow.addChild(clientWindow);
+        containerWindow.addChild(resizeWindow);
         
         titleWindow.setMousePressedCallback(new IMouseCallback() {
 
@@ -69,6 +73,14 @@ public class TopWindow {
             @Override
             public void handleClose() {
                 TopWindow.this.handleClose();
+            }
+        });
+        
+        resizeWindow.setMouseDraggedCallback(new IMouseCallback() {
+
+            @Override
+            public void handleMouse(PointF point) {
+                TopWindow.this.handleResizeWindowDragged(point);
             }
         });
     }
@@ -125,5 +137,18 @@ public class TopWindow {
     
     public void requestClose(){
         windowManager.removeTopWindow(this);
+    }
+    
+    public void resize(float width, float height){
+        containerWindow.resize(width, height);
+    }
+
+    private void handleResizeWindowDragged(PointF point) {
+        //Convert to container coordinates
+        PointF containerPoint = CoordinateMath.transformToAbsolutePoint(point, 
+                resizeWindow.getWindowArea());
+        
+        containerWindow.resize(containerPoint.getX() * containerWindow.getWindowArea().getWidth(), containerPoint.getY() * containerWindow.getWindowArea().getHeight());
+        requestRepaint();
     }
 }

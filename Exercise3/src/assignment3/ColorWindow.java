@@ -37,6 +37,7 @@ public class ColorWindow extends TopWindow {
     @Override
     public void handleMouseClicked(PointF point){
         firstColorSet = !firstColorSet;
+        resize(.1f, .1f);
         requestRepaint();
     }
 }
