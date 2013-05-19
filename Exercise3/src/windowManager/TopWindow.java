@@ -103,7 +103,7 @@ public class TopWindow {
     }
     
     public void addChild(SimpleWindow child){
-        clientWindow.addChild(clientWindow);
+        clientWindow.addChild(child);
     }
     
     protected void handlePaint(DrawingContext drawingContext){
