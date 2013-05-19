@@ -2,6 +2,7 @@ package windowManager.rat;
 
 import java.awt.Color;
 import windowManager.rat.borders.IBorder;
+import windowManager.rat.borders.InternalLineBorder;
 import windowManager.rat.borders.LineBorder;
 import windowManager.rat.events.AbstractRatMouseListener;
 import windowManager.rat.events.RatMouseEvent;
@@ -22,8 +23,15 @@ public class RatButton extends RatLabel {
   private IBorder hoverBorder = new LineBorder(1, Color.GREEN);
 
   private Color activeBackground = Color.LIGHT_GRAY;
-  
+
   private Color normalBackground = Color.WHITE;
+
+  // TODO: Shift internal border into a CompoundBorder
+  private IBorder internalNormalBorder = new InternalLineBorder(1, Color.BLACK, 0.01f, 0.1f);
+
+  private IBorder internalHoverBorder = new InternalLineBorder(1, Color.GREEN, 0.01f, 0.1f);
+
+  private IBorder internalBorder = new InternalLineBorder(1, Color.BLACK, 0.01f, 0.1f);
 
   public RatButton(RectangleF windowArea, String label) {
     super(windowArea, label);
@@ -40,11 +48,13 @@ public class RatButton extends RatLabel {
 
       @Override
       public void mouseEntered(RatMouseEvent event) {
+        internalBorder = internalHoverBorder;
         RatButton.this.setBorder(hoverBorder);
       }
 
       @Override
       public void mouseExited(RatMouseEvent event) {
+        internalBorder = internalNormalBorder;
         RatButton.this.setBorder(normalBorder);
       }
 
@@ -70,7 +80,7 @@ public class RatButton extends RatLabel {
     this.activeBackground = activeBackground;
     requestRepaint();
   }
-  
+
   private void animateClick() {
     // TODO
   }
@@ -78,5 +88,6 @@ public class RatButton extends RatLabel {
   @Override
   protected void handlePaint(DrawingContext context) {
     super.handlePaint(context);
+    internalBorder.draw(context);
   }
 }

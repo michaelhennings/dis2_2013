@@ -34,4 +34,8 @@ public abstract class AbstractRatMouseListener implements IRatMouseListener {
   @Override
   public void mouseReleased(RatMouseEvent event) {
   }
+
+  @Override
+  public void mouseDragged(RatMouseEvent event) {
+  }
 }

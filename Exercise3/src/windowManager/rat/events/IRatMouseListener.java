@@ -20,4 +20,6 @@ public interface IRatMouseListener extends IRatEventListener {
   void mousePressed(RatMouseEvent event);
 
   void mouseReleased(RatMouseEvent event);
+  
+  void mouseDragged(RatMouseEvent event);
 }

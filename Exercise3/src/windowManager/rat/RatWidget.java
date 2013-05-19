@@ -1,5 +1,6 @@
 package windowManager.rat;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,10 @@ public abstract class RatWidget extends SimpleWindow {
 
   private IBorder border = null;
 
+  private Color background;
+
+  private boolean opaque = false;
+
   public RatWidget(RectangleF windowArea) {
     super(windowArea);
     super.setMouseClickedCallback(new IMouseCallback() {
@@ -54,10 +59,25 @@ public abstract class RatWidget extends SimpleWindow {
         fireMouseReleasedEvent(point);
       }
     });
+    super.setMouseDraggedCallback(new IMouseCallback() {
+      @Override
+      public void handleMouse(PointF point) {
+        fireMouseDraggedEvent(point);
+      }
+    });
+  }
+
+  public void setBackground(Color background) {
+    this.background = background;
+  }
+
+  public Color getBackground() {
+    return background;
   }
 
   public void setBorder(IBorder border) {
     this.border = border;
+    requestRepaint();
   }
 
   public IBorder getBorder() {
@@ -84,21 +104,41 @@ public abstract class RatWidget extends SimpleWindow {
 
   @Override
   protected void handlePaint(DrawingContext context) {
-    paintBorder(context);
     super.handlePaint(context);
+    paintBorder(context);
+    if (opaque) {
+      context.setColor(background);
+      context.fillRect(RectangleF.FULL);
+    }
+  }
+
+  public void setOpaque(boolean opaque) {
+    this.opaque = opaque;
+  }
+
+  public boolean isOpaque() {
+    return opaque;
+  }
+
+  protected void addListener(IRatEventListener listener, Class<? extends IRatEventListener> clazz) {
+    if (!listenerList.containsKey(clazz)) {
+      listenerList.put(clazz, new ArrayList<IRatEventListener>());
+    }
+    listenerList.get(clazz).add(listener);
+  }
+
+  protected void removeListener(IRatEventListener listener, Class<? extends IRatEventListener> clazz) {
+    if (listenerList.containsKey(clazz)) {
+      listenerList.get(clazz).remove(listener);
+    }
   }
 
   public void addMouseListener(IRatMouseListener listener) {
-    if (!listenerList.containsKey(IRatMouseListener.class)) {
-      listenerList.put(IRatMouseListener.class, new ArrayList<IRatEventListener>());
-    }
-    listenerList.get(IRatMouseListener.class).add(listener);
+    addListener(listener, IRatMouseListener.class);
   }
 
   public void removeMouseListener(IRatMouseListener listener) {
-    if (listenerList.containsKey(IRatMouseListener.class)) {
-      listenerList.get(IRatMouseListener.class).remove(listener);
-    }
+    removeListener(listener, IRatMouseListener.class);
   }
 
   protected void fireMouseClickEvent(PointF point) {
@@ -133,6 +173,15 @@ public abstract class RatWidget extends SimpleWindow {
     if (listenerList.containsKey(IRatMouseListener.class)) {
       for (IRatEventListener listener : listenerList.get(IRatMouseListener.class)) {
         ((IRatMouseListener) listener).mouseReleased(event);
+      }
+    }
+  }
+
+  protected void fireMouseDraggedEvent(PointF point) {
+    RatMouseEvent event = new RatMouseEvent(point.getX(), point.getY(), this);
+    if (listenerList.containsKey(IRatMouseListener.class)) {
+      for (IRatEventListener listener : listenerList.get(IRatMouseListener.class)) {
+        ((IRatMouseListener) listener).mouseDragged(event);
       }
     }
   }

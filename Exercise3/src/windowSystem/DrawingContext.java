@@ -61,6 +61,15 @@ public class DrawingContext {
     windowSystem.fillRect(desktopX, desktopY, desktopWidth, desktopHeight);
   }
 
+  public void drawRect(RectangleF rectangle) {
+    int desktopX = (int) (window.getDesktopArea().x + rectangle.getX() * window.getDesktopArea().width);
+    int desktopY = (int) (window.getDesktopArea().y + rectangle.getY() * window.getDesktopArea().height);
+    int desktopWidth = (int) (window.getDesktopArea().getWidth() * rectangle.getWidth());
+    int desktopHeight = (int) (window.getDesktopArea().getHeight() * rectangle.getHeight());
+    
+    windowSystem.drawRect(desktopX, desktopY, desktopWidth, desktopHeight);
+  }
+  
   public void drawLine(PointF start, PointF end) {
     int desktopStartX = (int) (window.getDesktopArea().x + start.getX() * window.getDesktopArea().width);
     int desktopStartY = (int) (window.getDesktopArea().y + start.getY() * window.getDesktopArea().height);

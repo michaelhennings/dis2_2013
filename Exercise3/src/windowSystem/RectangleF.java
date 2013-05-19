@@ -76,4 +76,9 @@ public class RectangleF {
 
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "RectangleF{" + "x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + '}';
+  }
 }
