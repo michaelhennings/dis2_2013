@@ -292,6 +292,7 @@ public class WindowSystem extends GraphicsEventSystem {
     for (SimpleWindow child : window.children) {
       initNewWindow(child);
     }
+    window.handleInit();
   }
 
   /**

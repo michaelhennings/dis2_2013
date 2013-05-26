@@ -51,4 +51,8 @@ public class TitleBarWindow extends SimpleWindow {
   public void setCloseCallback(ICloseCallback closeCallback) {
     this.closeCallback = closeCallback;
   }
+  
+  public CloseWindow getCloseWindow(){
+      return closeWindow;
+  }
 }

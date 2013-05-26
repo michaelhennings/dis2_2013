@@ -4,6 +4,7 @@
  */
 package windowManager;
 
+import java.awt.Rectangle;
 import windowSystem.CoordinateMath;
 import windowSystem.DrawingContext;
 import windowSystem.IMouseCallback;
@@ -11,12 +12,15 @@ import windowSystem.IPaintCallback;
 import windowSystem.PointF;
 import windowSystem.RectangleF;
 import windowSystem.SimpleWindow;
+import java.awt.Rectangle;
+import windowSystem.IInitCallback;
 
 /**
  *
  * @author Andre
  */
 public class TopWindow {
+    private static final int TITLE_DESKTOP_HEIGHT = 25;
     SimpleWindow containerWindow;
     TitleBarWindow titleWindow;
     SimpleWindow clientWindow;
@@ -100,6 +104,14 @@ public class TopWindow {
                 TopWindow.this.windowManager.moveWindowToTop(TopWindow.this);
             }
         });
+        
+        containerWindow.setInitCallback(new IInitCallback() {
+
+            @Override
+            public void handleInit() {
+                recalculateTitleSize();
+            }
+        });
     }
     
     public void addChild(SimpleWindow child){
@@ -166,7 +178,23 @@ public class TopWindow {
                 resizeWindow.getWindowArea());
         
         containerWindow.resize(containerPoint.getX() * containerWindow.getWindowArea().getWidth(), containerPoint.getY() * containerWindow.getWindowArea().getHeight());
+        recalculateTitleSize();
         requestRepaint();
+    }
+    
+    private void recalculateTitleSize(){
+        //Quick hack to have a constant title bar height and a constant size
+        //for the close button
+        Rectangle containerDesktopArea = containerWindow.getDesktopArea();
+        float height = (float)TITLE_DESKTOP_HEIGHT / (float)containerDesktopArea.getHeight();
+        titleWindow.resize(titleWindow.getWindowArea().getWidth(), height);
+        clientWindow.moveTo(new PointF(0.0f, height));
+        clientWindow.resize(clientWindow.getWindowArea().getWidth(), 1.0f-height);
+        CloseWindow closeWindow = titleWindow.getCloseWindow();
+        float closeWidth = 20.0f/(float)titleWindow.getDesktopArea().getWidth();
+        closeWindow.resize(closeWidth, .8f);
+        float closeX = 2.0f/(float)titleWindow.getDesktopArea().getWidth();
+        closeWindow.moveTo(new PointF(closeX, closeX));
     }
 
     protected void handleMousePressed(PointF point) {

@@ -41,6 +41,8 @@ public class SimpleWindow {
   IMouseCallback mousePressedCallback;
 
   IMouseCallback mouseReleasedCallback;
+  
+  IInitCallback initCallback;
 
   public SimpleWindow(RectangleF windowArea) {
     this.windowArea = windowArea;
@@ -236,8 +238,8 @@ public class SimpleWindow {
     }
   }
 
-  Rectangle getDesktopArea() {
-    return desktopArea;
+  public Rectangle getDesktopArea() {
+    return new Rectangle(desktopArea);
   }
 
   public void requestRepaint() {
@@ -301,5 +303,15 @@ public class SimpleWindow {
     windowArea.setWidth(width);
     windowArea.setHeight(height);
     recalculateDesktopArea();
+  }
+  
+  protected void handleInit(){
+      if(initCallback != null){
+          initCallback.handleInit();
+      }
+  }
+  
+  public void setInitCallback(IInitCallback initCallback){
+      this.initCallback = initCallback;
   }
 }
