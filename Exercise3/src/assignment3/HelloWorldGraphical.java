@@ -16,7 +16,7 @@ import windowSystem.RectangleF;
 import windowSystem.WindowSystem;
 
 /**
- * Exercise 3.
+ * Exercise WS Part 3.
  *
  * @author Michael Hennings
  * @author Andre Tebart
@@ -62,7 +62,7 @@ public class HelloWorldGraphical extends TopWindow {
       @Override
       public void sliderStateChanged(RatSliderStateChangedEvent event) {
         int val = (int) event.getValue();
-        background = new Color(255, 255 - val, val);
+        label.setBackground(new Color(255, 255 - val, val));
       }
     });
 

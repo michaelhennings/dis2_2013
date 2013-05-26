@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DIS2_Exercise2" default="compile">
   <property name="mainclass" value="assignment3.HelloWorldGraphical" />
+
+  <!--
+   * Project dependencies (compiling/running the application)
+   -->
+  <path id="project.dependencies">
+    <fileset dir="libs" includes="*.jar"/>    
+  </path>
   
+  <!--
+   * Project classpath (running the application)
+  -->
+  <path id="project.classpath">
+    <pathelement path="build" />
+    <path refid="project.dependencies" />
+  </path>
+
   <target name="compile">
     <mkdir dir="build" />
     <copy todir="build">
@@ -9,16 +24,13 @@
     </copy>
     <javac destdir="build" includeantruntime="false" debug="true">
       <src location="src" />
-      <classpath location="libs/GraphicsEventSystem.jar" />
+      <classpath refid="project.dependencies" />
     </javac>
   </target>
   
   <target name="run" depends="compile">
     <java dir="build" classname="${mainclass}" fork="true">
-      <classpath>
-        <pathelement path="build"/>
-        <pathelement location="libs/GraphicsEventSystem.jar" />
-      </classpath>
+      <classpath refid="project.classpath" />
     </java>
   </target>
   

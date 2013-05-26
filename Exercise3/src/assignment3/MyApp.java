@@ -5,6 +5,9 @@ import windowManager.WindowManager;
 import windowSystem.RectangleF;
 import windowSystem.WindowSystem;
 
+/**
+ * Old solution for exercise 3.
+ */
 public class MyApp {
 
   public static void main(String[] args) {
