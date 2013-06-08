@@ -1,0 +1,42 @@
+<project name="DIS 2 Window System" default="run" basedir=".">
+    <description>
+        Builds the DIS 2 Window System
+    </description>
+  <!-- set global properties for this build -->
+  <property name="mainclass" value="assignment3.HelloWorldGraphical" />
+  <property name="src" location="source"/>
+  <property name="build" location="build"/>
+  <path id="project.class.path">
+    <pathelement location="lib/GES.jar"/>
+    <pathelement path="${java.home}/lib/jfxrt.jar"/>
+    <pathelement path="${build}/"/>
+  </path>
+
+  <target name="init">
+
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="false" debug="true">
+		 <classpath refid="project.class.path"/>
+	</javac>
+  </target>
+
+  <target name="run" description="runs MyApp" depends="compile">
+      <java classname="${mainclass}" failonerror="true" fork="yes">
+		  <classpath refid="project.class.path"/>
+      </java>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+  </target>
+</project>

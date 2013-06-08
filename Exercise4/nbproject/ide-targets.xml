@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="DIS2_Exercise4-IDE">
+    <property file="nbproject/nbjdk.properties"/>
+    <property location="${netbeans.user}/build.properties" name="user.properties.file"/>
+    <property file="${user.properties.file}"/>
+    <import file="jdk.xml"/>
+    <import file="../build.xml"/>
+    <!-- TODO: edit the following target according to your needs -->
+    <!-- (more info: http://www.netbeans.org/kb/articles/freeform-config.html#debugj2se) -->
+    <target depends="-jdk-init,compile" description="runs MyApp" name="debug-nb">
+        <nbjpdastart addressproperty="jpda.address" name="DIS2_Exercise4" transport="dt_socket">
+            <classpath refid="project.class.path"/>
+        </nbjpdastart>
+        <java classname="${mainclass}" failonerror="true" fork="yes">
+            <classpath refid="project.class.path"/>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+        </java>
+    </target>
+</project>

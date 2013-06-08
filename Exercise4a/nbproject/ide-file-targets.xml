@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="DIS2_Exercise2-IDE">
+  <import file="../build.xml" />
+  
+  <!-- TODO: edit the following target according to your needs -->
+  <!-- (more info: http://www.netbeans.org/kb/articles/freeform-config.html#runsingle) -->
+  <target name="run-selected-file-in-src" depends="compile">
+    <fail unless="run.class">Must set property 'run.class'</fail>
+    <java classname="${run.class}" failonerror="true" fork="true" dir="build">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="libs/GraphicsEventSystem.jar"/>
+      </classpath>
+    </java>
+  </target>
+</project>
