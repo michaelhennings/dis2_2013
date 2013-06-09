@@ -41,15 +41,15 @@ public class SimpleWindow {
   IMouseCallback mousePressedCallback;
 
   IMouseCallback mouseReleasedCallback;
-  
+
   IInitCallback initCallback;
-  
+
   ITickCallback tickCallback;
 
   public SimpleWindow(RectangleF windowArea) {
-    this.windowArea = windowArea;
+    this.windowArea = new RectangleF(windowArea);
 
-    //The desktop area is first correctly initialized when the window is 
+    //The desktop area is first correctly initialized when the window is
     //registered with the window system.
     desktopArea = new Rectangle();
     children = new ArrayList<SimpleWindow>();
@@ -66,6 +66,11 @@ public class SimpleWindow {
 
   void internalInit(DrawingContext drawingContext) {
     this.drawingContext = drawingContext;
+    recalculateDesktopArea();
+  }
+
+  public void setWindowArea(RectangleF windowArea) {
+    this.windowArea = windowArea;
     recalculateDesktopArea();
   }
 
@@ -122,7 +127,7 @@ public class SimpleWindow {
       mouseClickedCallback.handleMouse(point);
     }
   }
-  
+
   protected void handleTick() {
     if(tickCallback != null) {
       tickCallback.tick();
@@ -131,7 +136,7 @@ public class SimpleWindow {
       child.handleTick();
     }
   }
-  
+
   protected void setTickCallback(ITickCallback callback) {
     this.tickCallback = callback;
   }
@@ -319,13 +324,13 @@ public class SimpleWindow {
     windowArea.setHeight(height);
     recalculateDesktopArea();
   }
-  
+
   protected void handleInit(){
       if(initCallback != null){
           initCallback.handleInit();
       }
   }
-  
+
   public void setInitCallback(IInitCallback initCallback){
       this.initCallback = initCallback;
   }

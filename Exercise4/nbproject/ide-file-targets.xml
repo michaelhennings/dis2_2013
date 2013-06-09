@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="DIS2_Exercise4-IDE">
+    <property file="nbproject/nbjdk.properties"/>
+    <property location="${netbeans.user}/build.properties" name="user.properties.file"/>
+    <property file="${user.properties.file}"/>
+    <import file="jdk.xml"/>
+    <!-- TODO: edit the following target according to your needs -->
+    <!-- (more info: http://www.netbeans.org/kb/articles/freeform-config.html#compilesingle) -->
+    <target depends="-jdk-init" name="compile-selected-files-in-source">
+        <fail unless="files">Must set property 'files'</fail>
+        <mkdir dir="build"/>
+        <javac destdir="build" includes="${files}" source="1.6" srcdir="source">
+            <classpath path="lib/GES.jar;lib/jfxrt.jar"/>
+        </javac>
+    </target>
+</project>

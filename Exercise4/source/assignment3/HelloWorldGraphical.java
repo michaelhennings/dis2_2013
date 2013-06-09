@@ -7,9 +7,11 @@ import windowManager.rat.events.AbstractRatMouseListener;
 import windowManager.rat.RatButton;
 import windowManager.rat.RatLabel;
 import windowManager.rat.RatSlider;
+import windowManager.rat.RatTaskbar;
 import windowManager.rat.events.RatMouseEvent;
 import windowManager.rat.events.IRatSliderStateChangedListener;
 import windowManager.rat.events.RatSliderStateChangedEvent;
+import windowManager.taskbar.IApplication;
 import windowSystem.DrawingContext;
 import windowSystem.RectangleF;
 import windowSystem.WindowSystem;
@@ -80,10 +82,23 @@ public class HelloWorldGraphical extends TopWindow {
   }
 
   public static void main(String[] args) {
-    WindowSystem windowSystem = new WindowSystem(800, 600);
-    WindowManager windowManager = new WindowManager(windowSystem);
+    RatTaskbar taskbar = new RatTaskbar();
+    taskbar.addApplication(new IApplication() {
+      @Override
+      public String getName() {
+        return "Hello World G";
+      }
 
-    HelloWorldGraphical hwg = new HelloWorldGraphical(new RectangleF(0.1f, 0.1f, 0.7f, 0.5f), "HWG-2");
+      @Override
+      public TopWindow newInstance() {
+        return new HelloWorldGraphical(new RectangleF(0.15f, 0.2f, 0.7f, 0.5f), "HWG-2");
+      }
+    });
+
+    WindowSystem windowSystem = new WindowSystem(800, 600);
+    WindowManager windowManager = new WindowManager(windowSystem, taskbar);
+
+    HelloWorldGraphical hwg = new HelloWorldGraphical(new RectangleF(0.15f, 0.2f, 0.7f, 0.5f), "HWG-2");
     windowManager.addTopWindow(hwg);
   }
 }

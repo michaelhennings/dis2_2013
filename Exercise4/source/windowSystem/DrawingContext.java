@@ -2,7 +2,6 @@ package windowSystem;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import javafx.scene.text.Font;
 
 /**
  * Window dependent drawing context. This class abstracts away from the drawing
@@ -18,16 +17,10 @@ public class DrawingContext {
 
   private Color color;
 
-//  private Font font;
-
-  private final Rectangle clippingBound;
-
   DrawingContext(WindowSystem windowSystem, SimpleWindow window) {
     this.windowSystem = windowSystem;
     this.window = window;
     color = Color.WHITE;
-//    font = Font.font("monospaced", 12);
-    this.clippingBound = window.getDesktopArea();
   }
 
   /**
@@ -112,16 +105,16 @@ public class DrawingContext {
 
   public void drawStringCentered(PointF center, String text) {
     PointI pos = convertCoordinates(center);
-    
+
     RectangleI size = windowSystem.getTextSize(text);
     pos.x -= size.getWidth() / 2;
     pos.y += size.getHeight() / 2;
 
     /** Brute-force variant of clipping the text **/
-    
+
     int clipRight = window.getDesktopArea().x + window.getDesktopArea().width;
     int clipLeft = window.getDesktopArea().x;
-    
+
     while(pos.x+size.getWidth() > clipRight && !text.isEmpty()) {
       text = text.substring(0, text.length()-1);
       size = windowSystem.getTextSize(text);
